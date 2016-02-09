@@ -24,17 +24,19 @@ if [ -z "$EMAIL" ]; then
   exit 1
 fi
 
-domain_args=""
-for i in "${DOMAINS[@]}"
-do
-  domain_args="$domain_args -d $i"
-done
-
 if [ -n "${LETSENCRYPT_ENDPOINT+1}" ]; then
   echo "server = $LETSENCRYPT_ENDPOINT" >> /etc/letsencrypt/cli.ini
 fi
 
-letsencrypt certonly \
-  --text --renew-by-default --agree-tos \
-  $domain_args \
-  --email=$EMAIL
+for i in "${DOMAINS[@]}"
+do
+  if [ -d "/etc/letsencrypt/live/$i" ]; then
+    echo "Cert found for domain $i"
+  else
+    echo "Requesting cert for domain $i..."
+    letsencrypt certonly \
+      --text --renew-by-default --agree-tos \
+      --email=$EMAIL \
+      -d $i
+  fi
+done
