@@ -7,6 +7,10 @@
 # Multiple replicas need to share /etc/letsencrypt as volume and make sure only one at a time is renewing certs.
 # We also need to bypass renew for existing certs until X days before expiry.
 
+if [ -n "${cert_email+1}" ]; then
+  sleep "$cert_delay"
+fi
+
 EMAIL=${cert_email}
 DOMAINS=(${cert_domains})
 

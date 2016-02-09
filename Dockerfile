@@ -15,6 +15,7 @@ COPY cert-sync /usr/local/bin/
 
 COPY httpd-foreground /usr/local/bin/
 
+ENV cert_delay=1
 # Commented out because we don't want defaults
 #ENV cert_domains
 #ENV cert_email
