@@ -14,7 +14,7 @@ RUN ln -s /root/.local/share/letsencrypt/bin/letsencrypt /usr/local/bin/letsencr
 COPY bin/* /usr/local/bin/
 
 ENV cert_delay=1
-ENV cert_single
+ENV cert_single=true
 # Commented out because we don't want defaults
 #ENV cert_domains
 #ENV cert_email

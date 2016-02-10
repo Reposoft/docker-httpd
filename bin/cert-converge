@@ -32,6 +32,7 @@ if [ "${cert_single}" ]; then
   done
   cert-renew ${domain_args:3}
   exit $?
+  # TODO before exit we should probably symlink from the first domain to each alt name, to allow consistent config between single/individual certs
 fi
 
 for i in "${DOMAINS[@]}"
