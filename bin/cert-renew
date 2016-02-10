@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -z "${cert_email}" ]; then
+  echo "ERROR: cert_email env is empty string or unset"
+  exit 1
+fi
+
+letsencrypt certonly \
+  --text --renew-by-default --agree-tos \
+  --email=${cert_email} \
+  -d $@

@@ -7,11 +7,11 @@
 # Multiple replicas need to share /etc/letsencrypt as volume and make sure only one at a time is renewing certs.
 # We also need to bypass renew for existing certs until X days before expiry.
 
-if [ -n "${cert_email+1}" ]; then
+if [ -n "${cert_delay+1}" ]; then
+  echo "Pausing for $cert_delay seconds before converging certs"
   sleep "$cert_delay"
 fi
 
-EMAIL=${cert_email}
 DOMAINS=(${cert_domains})
 
 if [ -z "$DOMAINS" ]; then
@@ -19,24 +19,27 @@ if [ -z "$DOMAINS" ]; then
   exit 1
 fi
 
-if [ -z "$EMAIL" ]; then
-  echo "ERROR: Email is empty string or unset"
-  exit 1
+if [ -n "${LETSENCRYPT_ENDPOINT+1}" ]; then
+  sed -i 's/^server =/^#server =/' /etc/letsencrypt/cli.ini
+  echo "server = $LETSENCRYPT_ENDPOINT" >> /etc/letsencrypt/cli.ini
 fi
 
-if [ -n "${LETSENCRYPT_ENDPOINT+1}" ]; then
-  echo "server = $LETSENCRYPT_ENDPOINT" >> /etc/letsencrypt/cli.ini
+if [ "${cert_single}" ]; then
+  domain_args=""
+  for i in "${DOMAINS[@]}"
+  do
+    domain_args="$domain_args -d $i"
+  done
+  cert-renew ${domain_args:3}
+  exit $?
 fi
 
 for i in "${DOMAINS[@]}"
 do
   if [ -d "/etc/letsencrypt/live/$i" ]; then
-    echo "Cert found for domain $i"
+    echo "Cert found for host $i"
   else
     echo "Requesting cert for domain $i..."
-    letsencrypt certonly \
-      --text --renew-by-default --agree-tos \
-      --email=$EMAIL \
-      -d $i
+    cert-renew $i
   fi
 done
