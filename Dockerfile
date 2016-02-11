@@ -11,11 +11,10 @@ RUN cd /usr/local/letsencrypt-0.3.0 \
 
 RUN ln -s /root/.local/share/letsencrypt/bin/letsencrypt /usr/local/bin/letsencrypt
 
-COPY cert-sync /usr/local/bin/
-
-COPY httpd-foreground /usr/local/bin/
+COPY bin/* /usr/local/bin/
 
 ENV cert_delay=1
+ENV cert_single=true
 # Commented out because we don't want defaults
 #ENV cert_domains
 #ENV cert_email

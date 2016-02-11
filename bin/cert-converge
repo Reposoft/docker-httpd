@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# TODO Can't yet replace a setup like
+# http://blog.ployst.com/development/2015/12/22/letsencrypt-on-kubernetes.html
+# This script currently assumes a single replica of the container
+#  - rarely restarted but always within 90 days.
+# Multiple replicas need to share /etc/letsencrypt as volume and make sure only one at a time is renewing certs.
+# We also need to bypass renew for existing certs until X days before expiry.
+
+if [ -n "${cert_delay+1}" ]; then
+  echo "Pausing for $cert_delay seconds before converging certs"
+  sleep "$cert_delay"
+fi
+
+DOMAINS=(${cert_domains})
+
+if [ -z "$DOMAINS" ]; then
+  echo "ERROR: Domain list is empty or unset"
+  exit 1
+fi
+
+if [ -n "${LETSENCRYPT_ENDPOINT+1}" ]; then
+  sed -i 's/^server =/^#server =/' /etc/letsencrypt/cli.ini
+  echo "server = $LETSENCRYPT_ENDPOINT" >> /etc/letsencrypt/cli.ini
+fi
+
+if [ "${cert_single}" ]; then
+  domain_args=""
+  for i in "${DOMAINS[@]}"
+  do
+    domain_args="$domain_args -d $i"
+  done
+  cert-renew ${domain_args:3}
+  exit $?
+  # TODO before exit we should probably symlink from the first domain to each alt name, to allow consistent config between single/individual certs
+fi
+
+for i in "${DOMAINS[@]}"
+do
+  if [ -d "/etc/letsencrypt/live/$i" ]; then
+    echo "Cert found for host $i"
+  else
+    echo "Requesting cert for domain $i..."
+    cert-renew $i
+  fi
+done
