@@ -1,4 +1,4 @@
-# Various httpd images
+# Apache 2 `httpd` images
 
 Derivatives of https://hub.docker.com/_/httpd/. Linux distros' httpd packages introduce config modularity that we don't need in Docker based hosting. The single `conf` folder with `httpd.conf` is more userful here.
 
@@ -12,8 +12,10 @@ Includes https://github.com/pingidentity/mod_auth_openidc/.
 
 Was designed for a specific hosting scenario. See limitations+caveats in cert-sync.
 
-We tend to use https://github.com/Reposoft/docker-letsencrypt instead these days.
+These days we tend to use https://github.com/Reposoft/docker-letsencrypt instead.
 
 ## more
+
+Other httpd based images in more specific repositories:
 
  * https://github.com/Reposoft/docker-svn/tree/master/httpd
