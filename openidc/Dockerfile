@@ -5,7 +5,12 @@ ENV OPENIDC_VERSION 1.8.8
 ENV OPENIDC_VERSION_TGZ_URL https://github.com/pingidentity/mod_auth_openidc/archive/v$OPENIDC_VERSION.tar.gz
 ENV OPENIDC_VERSION_TGZ_SHA1 7c104ab387273cd2794f18f7d66ced700a14aa80
 
-RUN buildDeps=' \
+RUN depsRuntime=' \
+		libcurl3 ca-certificates \
+		libpcre3 \
+		libjansson4 \
+	' \
+  && depsBuild=' \
 		curl ca-certificates \
 		gcc \
 		make \
@@ -18,7 +23,8 @@ RUN buildDeps=' \
 	' \
 	set -x \
 	&& apt-get update \
-	&& apt-get install -y --no-install-recommends $buildDeps \
+	&& apt-get install -y --no-install-recommends $depsRuntime \
+	&& apt-get install -y --no-install-recommends $depsBuild \
 	&& rm -r /var/lib/apt/lists/* \
 	&& curl -SL "$OPENIDC_VERSION_TGZ_URL" -o mod_auth_openidc-$OPENIDC_VERSION.tar.gz \
 	&& echo "$OPENIDC_VERSION_TGZ_SHA1 mod_auth_openidc-$OPENIDC_VERSION.tar.gz" | sha1sum -c - \
@@ -33,6 +39,6 @@ RUN buildDeps=' \
 	&& /sbin/ldconfig \
 	&& cd ../../ \
 	&& rm -r src/mod_auth_openidc \
-	&& apt-get purge -y --auto-remove $buildDeps
+	&& apt-get purge -y --auto-remove $depsBuild
 
 RUN sed -i 's|LoadModule rewrite_module modules/mod_rewrite.so|LoadModule rewrite_module modules/mod_rewrite.so\nLoadModule auth_openidc_module modules/mod_auth_openidc.so|' conf/httpd.conf
