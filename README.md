@@ -13,3 +13,7 @@ Includes https://github.com/pingidentity/mod_auth_openidc/.
 Was designed for a specific hosting scenario. See limitations+caveats in cert-sync.
 
 We tend to use https://github.com/Reposoft/docker-letsencrypt instead these days.
+
+## more
+
+ * https://github.com/Reposoft/docker-svn/tree/master/httpd
