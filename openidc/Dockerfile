@@ -11,7 +11,7 @@ RUN depsRuntime=' \
 		libjansson4 \
 	' \
   && depsBuild=' \
-		curl ca-certificates \
+		curl \
 		gcc \
 		make \
 		libpcre3-dev \
