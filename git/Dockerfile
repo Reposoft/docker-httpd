@@ -1,5 +1,5 @@
 
-FROM httpd:2.4.18
+FROM httpd:2.4.20
 
 ENV GIT_VERSION 2.8.1
 ENV GIT_VERSION_TGZ_URL https://www.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz
