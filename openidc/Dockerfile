@@ -9,6 +9,7 @@ RUN depsRuntime=' \
 		libcurl3 ca-certificates \
 		libpcre3 \
 		libjansson4 \
+		libhiredis0.10 \
 	' \
   && depsBuild=' \
 		curl \
@@ -20,6 +21,7 @@ RUN depsRuntime=' \
 		libjansson-dev \
 		pkg-config \
 		dh-autoreconf \
+		libhiredis-dev \
 	' \
 	set -x \
 	&& apt-get update \
