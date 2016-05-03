@@ -1,5 +1,5 @@
 
-FROM httpd:2.4.18
+FROM httpd:2.4.20
 
 ENV OPENIDC_VERSION 1.8.8
 ENV OPENIDC_VERSION_TGZ_URL https://github.com/pingidentity/mod_auth_openidc/archive/v$OPENIDC_VERSION.tar.gz
