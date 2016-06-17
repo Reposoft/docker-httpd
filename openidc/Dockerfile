@@ -1,9 +1,9 @@
 
 FROM httpd:2.4.20
 
-ENV OPENIDC_VERSION 1.8.8
+ENV OPENIDC_VERSION 1.8.9
 ENV OPENIDC_VERSION_TGZ_URL https://github.com/pingidentity/mod_auth_openidc/archive/v$OPENIDC_VERSION.tar.gz
-ENV OPENIDC_VERSION_TGZ_SHA1 7c104ab387273cd2794f18f7d66ced700a14aa80
+ENV OPENIDC_VERSION_TGZ_SHA1 bd06a8c3381c4ad11aaf9b9cce17dea59c082b98
 
 RUN depsRuntime=' \
 		libcurl3 ca-certificates \
