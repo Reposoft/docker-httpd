@@ -4,17 +4,21 @@ services:
     build: ../gitclient
     image: httpd-gitclient
     entrypoint: ["echo", "This service was just a build job. Exiting."]
-  git.init:
+  git.build:
     build: ../git
+    image: httpd-git
+    entrypoint: ["echo", "This service was just a build job. Exiting."]
+  githost:
+    build: ./githost
     depends_on:
-      - gitclient.build
-    expose:
+      - git.build
+    ports:
       - "80"
-    volumes:
-      - ./data-git/conf:/usr/local/apache2/conf
-      - ./data-git/cert:/usr/local/apache2/cert
+  git2:
+    image: solsson/httpd@sha256:5bd6cc8c9c3a3dc5d9cd816a602dd7eeb576520343dc9521a594ea13f7ca9d33
+    ports:
+      - "80"
   httpd:
     build: ../httpd-gitconf
     image: httpd-gitconf
-    volumes_from:
-      - git.init
+    #entrypoint: git-clones-then-httpd-foreground
