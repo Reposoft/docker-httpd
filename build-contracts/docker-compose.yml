@@ -1,0 +1,21 @@
+version: '2'
+services:
+  gitclient.build:
+    build: ../gitclient
+    image: httpd-gitclient
+    entrypoint: ["echo", "This service was just a build job. Exiting."]
+  git.init:
+    build: ../git
+    image: httpd-gitclient
+    depends_on:
+      - gitclient.build
+    expose:
+      - "80"
+    volumes:
+      - ./data-git/conf:/usr/local/apache2/conf
+      - ./data-git/cert:/usr/local/apache2/cert
+  httpd:
+    build: ../httpd-gitconf
+    image: httpd-gitconf
+    volumes_from:
+      - git.init
