@@ -1,4 +1,4 @@
-FROM solsson/httpd-gitclient
+FROM httpd-gitclient
 
 RUN sed -i 's|#LoadModule cgid_module|LoadModule cgid_module|' conf/httpd.conf \
   && sed -i 's|#LoadModule rewrite_module|LoadModule rewrite_module|' conf/httpd.conf \
