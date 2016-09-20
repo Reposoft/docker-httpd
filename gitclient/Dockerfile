@@ -7,6 +7,8 @@ ENV GIT_VERSION_TGZ_SHA1 2d588afe7adb11ea11e0787c4a2f01329a0f2f55
 
 RUN depsRuntime=' \
 		libcurl3 \
+		libcurl3-gnutls \
+		curl \
 		libexpat1 \
 		gettext \
 		libssl1.0.0 \
