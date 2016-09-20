@@ -1,9 +1,9 @@
 
 FROM httpd:2.4.23
 
-ENV GIT_VERSION 2.9.3
+ENV GIT_VERSION 2.10.0
 ENV GIT_VERSION_TGZ_URL https://www.kernel.org/pub/software/scm/git/git-$GIT_VERSION.tar.gz
-ENV GIT_VERSION_TGZ_SHA1 ae90c4e5008ae10c8a67a51ff3dbea8364d97168
+ENV GIT_VERSION_TGZ_SHA1 2d588afe7adb11ea11e0787c4a2f01329a0f2f55
 
 RUN depsRuntime=' \
 		libcurl3 \
