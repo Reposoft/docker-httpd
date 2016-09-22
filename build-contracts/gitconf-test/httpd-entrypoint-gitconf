@@ -1,0 +1,12 @@
+#!/usr/bin/perl -w
+use strict;
+
+`git clone http://githost/git/Test/conf.git /tmp/conf`; $? == 0 or die;
+`git clone http://githost/git/Test/cert.git /tmp/cert`; $? == 0 or die;
+`rm /usr/local/apache2/conf -Rf`; $? == 0 or die;
+`mv /tmp/conf /usr/local/apache2/conf`; $? == 0 or die;
+`mv /tmp/cert /usr/local/apache2/cert`; $? == 0 or die;
+`apachectl configtest`; $? == 0 or die;
+
+# now the real entrypoint
+exec 'httpd-foreground';
