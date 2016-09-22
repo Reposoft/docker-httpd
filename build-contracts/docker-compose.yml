@@ -10,24 +10,49 @@ services:
       - gitclient.build
     image: httpd-git
     entrypoint: ["echo", "This service was just a build job. Exiting."]
+  # httpd-git acceptance testing
   githost:
     build: ./githost
     depends_on:
       - git.build
     ports:
       - "80"
+  readonly:
+    build: ./githost
+    depends_on:
+      - git.build
+    ports:
+      - "80"
+    environment:
+      - GIT_READONLY=1
+  test.git:
+    build:  ./perlspec
+    labels:
+      com.yolean.build-contract: "*"
+    links:
+      - githost
+      - readonly
+    volumes:
+      - ./test:/test
+    command: /test/git-http-spec.pl
+  # httpd-gitconf acceptance testing
   httpd:
     build: ../httpd-gitconf
     image: httpd-gitconf
+    links:
+      - githost
     volumes:
       - ./gitconf-test:/gitconf-test
-    entrypoint: /gitconf-test/httpd-entrypoint.sh
+    entrypoint: /gitconf-test/httpd-entrypoint-gitconf
   conftest:
     image: httpd-gitclient
     depends_on:
       - gitclient.build
     labels:
       com.yolean.build-contract: "*"
+    links:
+      - githost
+      - httpd
     volumes:
       - ./gitconf-test:/gitconf-test
     entrypoint: /gitconf-test/reconf-test.sh
@@ -36,6 +61,8 @@ services:
     image: httpd-gitclient
     depends_on:
       - gitclient.build
+    links:
+      - httpd
     volumes:
       - ./gitconf-test:/gitconf-test
     entrypoint: /gitconf-test/up-test.sh
