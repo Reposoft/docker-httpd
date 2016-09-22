@@ -6,6 +6,8 @@ services:
     entrypoint: ["echo", "This service was just a build job. Exiting."]
   git.build:
     build: ../git
+    depends_on:
+      - gitclient.build
     image: httpd-git
     entrypoint: ["echo", "This service was just a build job. Exiting."]
   githost:
@@ -14,11 +16,26 @@ services:
       - git.build
     ports:
       - "80"
-  git2:
-    image: solsson/httpd@sha256:5bd6cc8c9c3a3dc5d9cd816a602dd7eeb576520343dc9521a594ea13f7ca9d33
-    ports:
-      - "80"
   httpd:
     build: ../httpd-gitconf
     image: httpd-gitconf
-    #entrypoint: git-clones-then-httpd-foreground
+    volumes:
+      - ./gitconf-test:/gitconf-test
+    entrypoint: /gitconf-test/httpd-entrypoint.sh
+  conftest:
+    image: httpd-gitclient
+    depends_on:
+      - gitclient.build
+    labels:
+      com.yolean.build-contract: "*"
+    volumes:
+      - ./gitconf-test:/gitconf-test
+    entrypoint: /gitconf-test/reconf-test.sh
+  # if this container stops the test should fail, so it can't terminate like a com.yolean.build-contract
+  uptest:
+    image: httpd-gitclient
+    depends_on:
+      - gitclient.build
+    volumes:
+      - ./gitconf-test:/gitconf-test
+    entrypoint: /gitconf-test/up-test.sh
