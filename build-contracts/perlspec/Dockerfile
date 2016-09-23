@@ -7,7 +7,7 @@ RUN cpan install Test::Spec
 
 RUN cpan install HTTP::Tiny
 
-RUN cpan install App::prowess
+RUN cpan install Test::Continuous
 
 RUN git --version && cpan install Git::Wrapper
 
