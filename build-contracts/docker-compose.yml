@@ -33,8 +33,7 @@ services:
       - githost
       - readonly
     volumes:
-      - ./test:/test
-    command: /test/git-http-spec.pl
+      - ./test:/project/t
   # httpd-gitconf acceptance testing
   httpd:
     build: ../httpd-gitconf
