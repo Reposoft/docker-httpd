@@ -7,6 +7,8 @@ RUN cpan install Test::Spec
 
 RUN cpan install HTTP::Tiny
 
+RUN cpan install App::prowess
+
 RUN git --version && cpan install Git::Wrapper
 
 RUN git config --global user.email "perlspec-testing@example.com" \
