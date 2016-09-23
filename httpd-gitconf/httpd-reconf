@@ -1,8 +1,16 @@
 #!/usr/bin/perl -w
+
 use strict;
 
-use Httpd-Conf-Reload;
+use HttpdReconf qw(refresh configtest reload);
 
+refresh() or die('Refresh failed');
+
+configtest() or die('Configtest failed');
+
+reload() or die('Configtest failed');
+
+=pod
 
 # timestamp
 RUNLABEL=()
@@ -17,3 +25,5 @@ function rollback
 apachectl configtest || rollback
 
 apachectl graceful || rollback
+
+=cut

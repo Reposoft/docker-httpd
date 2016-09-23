@@ -5,7 +5,7 @@ RUN (echo y;echo o conf prerequisites_policy follow;echo o conf commit) | cpan
 
 RUN cpan install Test::Spec
 
-RUN cpan install HTTP::Tiny
+RUN cpan install HTTP::Tiny JSON
 
 # We need one of these and I don't know which one is more stable or useful yet
 # To evaluate, toggle entrypoint between prove/autoprove/prowess

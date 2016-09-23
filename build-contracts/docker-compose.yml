@@ -42,6 +42,7 @@ services:
       - githost
     volumes:
       - ./gitconf-test:/gitconf-test
+      - ../httpd-gitconf:/perldev
     entrypoint: /gitconf-test/httpd-entrypoint-gitconf
   test.reconf:
     build:  ./perlspec
@@ -52,6 +53,6 @@ services:
       - httpd
     volumes:
       - ./gitconf-test:/project/t
-    # watch
+    # Of these test watch tools prowess' terminal usage seems to work better with docker-compose run, but neither understands Ctrl+C so you need docker kill
     #entrypoint: autoprove
     #entrypoint: prowess
