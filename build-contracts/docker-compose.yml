@@ -52,5 +52,7 @@ services:
       - githost
       - httpd
     volumes:
-      - ./gitconf-test:/gitconf-test
-    command: /gitconf-test/reconf-spec.pl
+      - ./gitconf-test:/project/t
+    # watch
+    #entrypoint: autoprove
+    #entrypoint: prowess
