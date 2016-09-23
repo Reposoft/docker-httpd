@@ -5,6 +5,8 @@ RUN (echo y;echo o conf prerequisites_policy follow;echo o conf commit) | cpan
 
 RUN cpan install Test::Spec
 
+RUN cpan install HTTP::Tiny
+
 RUN git --version && cpan install Git::Wrapper
 
 RUN git config --global user.email "perlspec-testing@example.com" \

@@ -1,3 +1,8 @@
+#!/usr/bin/perl -w
+use strict;
+
+use Httpd-Conf-Reload;
+
 
 # timestamp
 RUNLABEL=()

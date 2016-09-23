@@ -44,10 +44,8 @@ services:
     volumes:
       - ./gitconf-test:/gitconf-test
     entrypoint: /gitconf-test/httpd-entrypoint-gitconf
-  conftest:
-    image: httpd-gitclient
-    depends_on:
-      - gitclient.build
+  test.reconf:
+    build:  ./perlspec
     labels:
       com.yolean.build-contract: "*"
     links:
@@ -55,14 +53,4 @@ services:
       - httpd
     volumes:
       - ./gitconf-test:/gitconf-test
-    entrypoint: /gitconf-test/reconf-test.sh
-  # if this container stops the test should fail, so it can't terminate like a com.yolean.build-contract
-  uptest:
-    image: httpd-gitclient
-    depends_on:
-      - gitclient.build
-    links:
-      - httpd
-    volumes:
-      - ./gitconf-test:/gitconf-test
-    entrypoint: /gitconf-test/up-test.sh
+    command: /gitconf-test/reconf-spec.pl
