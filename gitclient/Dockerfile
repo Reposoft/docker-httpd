@@ -14,7 +14,7 @@ RUN depsRuntime=' \
 		libssl1.0.0 \
 	' \
   && depsBuild=' \
-		curl ca-certificates \
+		ca-certificates \
 		gcc \
 		make \
 		autoconf \
