@@ -38,6 +38,8 @@ services:
   httpd:
     build: ../httpd-gitconf
     image: httpd-gitconf
+    depends_on:
+      - gitclient.build
     links:
       - githost
     volumes:
