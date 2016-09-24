@@ -1,12 +1,35 @@
 #!/usr/bin/perl -w
-
 use strict;
+use warnings;
+
+use ReconfDirGit;
+use HttpdControl;
+
+my $conf = ReconfDirGit->new( dir => '/usr/local/apache2/conf' );
+print $conf->dir();
+print ": current rev = ";
+print $conf->rev();
+print "\n";
+
+my $control = HttpdControl->new();
+
+if ($control->configtest()) {
+  print " - Config is OK.\n";
+} else {
+  die("TODO revert to last known good config");
+}
+
+$conf->mark_good();
+
+$conf->pull_rebase();
+
+print "Continued?";
 
 use HttpdReconf qw(refresh configtest reload);
 
 refresh() or die('Refresh failed');
 
-configtest() or die('Configtest failed');
+
 
 reload() or die('Configtest failed');
 
