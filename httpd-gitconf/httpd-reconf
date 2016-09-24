@@ -5,7 +5,10 @@ use warnings;
 use ReconfDirGit;
 use HttpdControl;
 
-my $conf = ReconfDirGit->new( dir => '/usr/local/apache2/conf' );
+my $conf = ReconfDirGit->new(
+  dir => '/usr/local/apache2/conf',
+  remote => 'origin'
+);
 print $conf->dir();
 print ": current rev = ";
 print $conf->rev();
@@ -24,14 +27,6 @@ $conf->mark_good();
 $conf->pull_rebase();
 
 print "Continued?";
-
-use HttpdReconf qw(refresh configtest reload);
-
-refresh() or die('Refresh failed');
-
-
-
-reload() or die('Configtest failed');
 
 =pod
 
