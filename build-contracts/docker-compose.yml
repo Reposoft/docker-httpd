@@ -46,6 +46,8 @@ services:
       - ./gitconf-test:/gitconf-test
       - ../httpd-gitconf:/perldev
     entrypoint: /gitconf-test/httpd-entrypoint-gitconf
+    ports:
+      - "80"
     environment:
       - DEBUG=*
   test.reconf:
