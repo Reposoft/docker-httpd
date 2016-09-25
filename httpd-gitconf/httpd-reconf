@@ -2,6 +2,8 @@
 use strict;
 use warnings;
 
+use Log::Minimal env_debug => 'DEBUG';
+
 use ReconfDirGit;
 use HttpdControl;
 

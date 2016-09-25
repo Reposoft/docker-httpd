@@ -46,6 +46,8 @@ services:
       - ./gitconf-test:/gitconf-test
       - ../httpd-gitconf:/perldev
     entrypoint: /gitconf-test/httpd-entrypoint-gitconf
+    environment:
+      - DEBUG=*
   test.reconf:
     build:  ./perlspec
     labels:

@@ -3,6 +3,8 @@ package HttpdControl;
 use strict;
 use warnings;
 
+use Log::Minimal env_debug => 'DEBUG';
+
 sub new {
   my ($class, %args) = @_;
   return bless { %args }, $class;
