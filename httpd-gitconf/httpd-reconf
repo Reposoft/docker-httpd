@@ -13,22 +13,40 @@ my $conf = ReconfDirGit->new(
 );
 print $conf->dir();
 print ": current rev = ";
-print $conf->rev();
-print "\n";
+my $start = $conf->rev();
+print "$start\n";
 
 my $control = HttpdControl->new();
 
 if ($control->configtest()) {
-  print " - Config is OK.\n";
+  #print " - Config is OK.\n";
 } else {
   die("TODO revert to last known good config");
 }
 
 $conf->mark_good();
 
-$conf->pull_rebase();
+if (!$conf->fetch_rebase()) {
 
-print "Continued?";
+  critf("Failed to refresh configuration from remote");
+
+} else {
+
+  my $after = $conf->rev();
+  debugf("Rebase done. At $after.");
+
+  if ($control->configtest()) {
+    $control->reload();
+    infof("Config reloaded successfuly at $after");
+    # Keep last-known-good in case monitoring detects a regression
+  } else {
+    warnf("Invalid configuration at $after, reverting");
+    $conf->revert_to_good();
+  }
+
+}
+
+infof "Done.";
 
 =pod
 

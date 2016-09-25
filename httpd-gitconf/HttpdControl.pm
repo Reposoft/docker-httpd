@@ -14,7 +14,8 @@ sub configtest {
   my ($self) = @_;
   my $out = `apachectl configtest`;
   my $result = $?;
-  print $out;
+  chomp($out);
+  debugf($out);
   return $result == 0;
 }
 

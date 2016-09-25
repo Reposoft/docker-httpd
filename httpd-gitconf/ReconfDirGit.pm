@@ -18,7 +18,7 @@ sub dir {
 sub rev {
   my ($self) = @_;
   my $rev = `cd $self->{dir} && git rev-parse --verify HEAD`;
-  ($? == 0) or die('TODO throw exception instead');
+  ($? == 0) or croakf("Failed to read current rev: $rev");
   chomp($rev);
   return $rev;
 }
@@ -26,8 +26,9 @@ sub rev {
 sub branch {
   my ($self) = @_;
   my $branch = `cd $self->{dir} && git rev-parse --abbrev-ref HEAD`;
-  $? == 0 or die('Failed to read current branch');
+  $? == 0 or croakf("Failed to read current branch: $branch");
   chomp($branch);
+  $branch or croakf("Falsey branch name at ".$self->rev());
   return $branch;
 }
 
@@ -35,10 +36,11 @@ sub mark_good {
   my ($self) = @_;
   my $current = $self->branch();
   debugf(`cd $self->{dir} && git checkout -B reconf-last-known-good-configuration && git checkout $current`);
-  ($? == 0) or die('TODO throw exception instead');
+  ($? == 0) or croakf('Branch last good conf failed at $current');
+  debugf("reconf-last-known-good-configuration saved at ".$self->rev());
 }
 
-sub pull_rebase {
+sub fetch_rebase {
   my ($self) = @_;
   my $rev = $self->rev();
   my $current = $self->branch();
@@ -47,8 +49,14 @@ sub pull_rebase {
   chomp($remoterev);
   ($rev eq $remoterev) or croakf("Local rev $rev is out of sync with $self->{remote}/$current $remoterev");
   debugf("$current == $self->{remote}/$current == $rev");
-  `cd $self->{dir} && git fetch $self->{remote} && git rebase $self->{remote}/$current`;
-  ($? == 0) or croakf('TODO throw exception instead');
+  debugf(`cd $self->{dir} && git fetch $self->{remote} && git rebase $self->{remote}/$current`);
+  ($? == 0) or croakf("Fetch + rebase failed for $self->{remote}/$current");
+}
+
+sub revert_to_good {
+  my ($self) = @_;
+  debugf(`git checkout reconf-last-known-good-configuration`);
+  ($? == 0) or croakf("Revert failed. Now at ".$self->rev());
 }
 
 1;
