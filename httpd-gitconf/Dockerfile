@@ -26,4 +26,10 @@ RUN mkdir -p /usr/local/lib/site_perl/Scalar \
 COPY HttpdControl.pm /usr/local/lib/site_perl/
 COPY ReconfDirGit.pm /usr/local/lib/site_perl/
 
+COPY conf/cgi conf/cgi
+# TODO include
+
+COPY site_perl /usr/local/lib/site_perl
+COPY reconf admin-cgi/
+
 COPY httpd-reconf /usr/local/bin/
