@@ -19,19 +19,14 @@ print "$start\n";
 my $control = HttpdControl->new();
 
 if ($control->configtest()) {
-  #print " - Config is OK.\n";
+  $conf->mark_good();
 } else {
-  die("TODO revert to last known good config");
+  warnf("Starting from invalid config. There's hopefully a _reconf_last-known-good_ branch already.");
 }
 
-$conf->mark_good();
-
 if (!$conf->fetch_rebase()) {
-
   critf("Failed to refresh configuration from remote");
-
 } else {
-
   my $after = $conf->rev();
   debugf("Rebase done. At $after.");
 
@@ -43,7 +38,6 @@ if (!$conf->fetch_rebase()) {
     warnf("Invalid configuration at $after, reverting");
     $conf->revert_to_good();
   }
-
 }
 
 infof "Done.";

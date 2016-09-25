@@ -35,9 +35,10 @@ sub branch {
 sub mark_good {
   my ($self) = @_;
   my $current = $self->branch();
-  debugf(`cd $self->{dir} && git checkout -B reconf-last-known-good-configuration && git checkout $current`);
+  ($current =~ /^reconf_last-known-good_/) and die("Invalid state. Current branch is the checkpoint $current");
+  debugf(`cd $self->{dir} && git checkout -B _reconf_last-known-good_$current && git checkout $current`);
   ($? == 0) or croakf('Branch last good conf failed at $current');
-  debugf("reconf-last-known-good-configuration saved at ".$self->rev());
+  debugf("_reconf_last-known-good_$current saved at ".$self->rev());
 }
 
 sub fetch_rebase {
@@ -55,7 +56,9 @@ sub fetch_rebase {
 
 sub revert_to_good {
   my ($self) = @_;
-  debugf(`git checkout reconf-last-known-good-configuration`);
+  my $current = $self->branch();
+  ($current =~ /^reconf_last-known-good_/) and die("Current branch is already at the checkpoint $current");
+  debugf(`cd $self->{dir} && git checkout _reconf_last-known-good_$current && git checkout -B $current`);
   ($? == 0) or croakf("Revert failed. Now at ".$self->rev());
 }
 
