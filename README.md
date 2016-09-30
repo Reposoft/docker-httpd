@@ -6,7 +6,7 @@ These images are built to https://hub.docker.com/u/solsson/.
 
 ## `httpd:openidc`
 
-Includes https://github.com/pingidentity/mod_auth_openidc/.
+Deprecated. See `solsson/httpd-openidc`.
 
 ## `httpd:letsencrypt`
 
