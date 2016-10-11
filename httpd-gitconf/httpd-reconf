@@ -1,0 +1,61 @@
+#!/usr/bin/perl -w
+use strict;
+use warnings;
+
+use Log::Minimal env_debug => 'DEBUG';
+
+use ReconfDirGit;
+use HttpdControl;
+
+my $conf = ReconfDirGit->new(
+  dir => '/usr/local/apache2/conf',
+  remote => 'origin'
+);
+print $conf->dir();
+print ": current rev = ";
+my $start = $conf->rev();
+print "$start\n";
+
+my $control = HttpdControl->new();
+
+if ($control->configtest()) {
+  $conf->mark_good();
+} else {
+  warnf("Starting from invalid config. There's hopefully a _reconf_last-known-good_ branch already.");
+}
+
+if (!$conf->fetch_rebase()) {
+  critf("Failed to refresh configuration from remote");
+} else {
+  my $after = $conf->rev();
+  debugf("Rebase done. At $after.");
+
+  if ($control->configtest()) {
+    $control->reload();
+    infof("Config reloaded successfuly at $after");
+    # Keep last-known-good in case monitoring detects a regression
+  } else {
+    warnf("Invalid configuration at $after, reverting");
+    $conf->revert_to_good();
+  }
+}
+
+infof "Done.";
+
+=pod
+
+# timestamp
+RUNLABEL=()
+
+# keep current config state for undo
+for (d in conf cert)
+  git checkout -b previous-$RUNLABEL
+
+function rollback
+
+# test config
+apachectl configtest || rollback
+
+apachectl graceful || rollback
+
+=cut

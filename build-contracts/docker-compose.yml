@@ -1,0 +1,64 @@
+version: '2'
+services:
+  gitclient.build:
+    build: ../gitclient
+    image: httpd-gitclient
+    entrypoint: ["echo", "This service was just a build job. Exiting."]
+  git.build:
+    build: ../git
+    depends_on:
+      - gitclient.build
+    image: httpd-git
+    entrypoint: ["echo", "This service was just a build job. Exiting."]
+  # httpd-git acceptance testing
+  githost:
+    build: ./githost
+    depends_on:
+      - git.build
+    ports:
+      - "80"
+  readonly:
+    build: ./githost
+    depends_on:
+      - git.build
+    ports:
+      - "80"
+    environment:
+      - GIT_READONLY=1
+  test.git:
+    build:  ./perlspec
+    labels:
+      com.yolean.build-contract: "*"
+    links:
+      - githost
+      - readonly
+    volumes:
+      - ./test:/project/t
+  # httpd-gitconf acceptance testing
+  httpd:
+    build: ../httpd-gitconf
+    image: httpd-gitconf
+    depends_on:
+      - gitclient.build
+    links:
+      - githost
+    volumes:
+      - ./gitconf-test:/gitconf-test
+      - ../httpd-gitconf:/perldev
+    entrypoint: /gitconf-test/httpd-entrypoint-gitconf
+    ports:
+      - "80"
+    environment:
+      - DEBUG=*
+  test.reconf:
+    build:  ./perlspec
+    labels:
+      com.yolean.build-contract: "*"
+    links:
+      - githost
+      - httpd
+    volumes:
+      - ./gitconf-test:/project/t
+    # Of these test watch tools prowess' terminal usage seems to work better with docker-compose run, but neither understands Ctrl+C so you need docker kill
+    #entrypoint: autoprove
+    #entrypoint: prowess
